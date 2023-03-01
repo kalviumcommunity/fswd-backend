@@ -22,19 +22,53 @@ courseRoutes.get('/:courseId/averageRating', (req, res) => {
     });
 });
 
+courseRoutes.post('/:courseId/averageRating', (req, res) => {
+  let courseIdPassed = req.params.courseId;
+  let ratingPassed = req.body;
+  let writePath = path.join(__dirname, '..', 'courses.json');
+  if(validator.validateAverageRating(ratingPassed)) {
+      let courseDataModified = JSON.parse(JSON.stringify(courseData));
+      let filteredCourseData = courseDataModified.kalvium.filter(course => course.courseId == courseIdPassed);
+
+      let currentAverageRating = filteredCourseData[0].averageRating;
+      let studentsVoted = filteredCourseData[0].studentsVoted;
+      let modifiedAverageRating = ((currentAverageRating * studentsVoted) + ratingPassed.rating)/(studentsVoted+1);
+
+      for(const course of courseDataModified.kalvium) {
+        if(course.courseId == courseIdPassed) {
+          course.averageRating = modifiedAverageRating;
+          course.studentsVoted = course.studentsVoted + 1;
+          break;
+        }
+      }
+      console.log(courseDataModified);
+      fs.writeFileSync(writePath, JSON.stringify(courseDataModified), {encoding:'utf8', flag:'w'});
+      res.status(200);
+      res.json({
+        "message": `Average rating for the course ${courseIdPassed} has been modified`,
+        "averageRating": modifiedAverageRating,
+        "studentsVoted": studentsVoted + 1
+      });
+  } else {
+    res.status(500);
+    res.json({
+      "message": `Failed to update the average rating for ${courseIdPassed}`
+    });
+  }
+});
+
 courseRoutes.post('/', (req, res) => {
   const courseDetails = req.body;
-  console.log(req.body);
-  let writePath = path.join(__dirname, '..', 'courses.json')
-  if(validator.validateCourseInfo(courseDetails)) {
+  let writePath = path.join(__dirname, '..', 'courses.json');
+  if(validator.validateCourseInfo(courseDetails, courseData).status) {
     let courseDataModified = JSON.parse(JSON.stringify(courseData));
     courseDataModified.kalvium.push(courseDetails);
     fs.writeFileSync(writePath, JSON.stringify(courseDataModified), {encoding:'utf8', flag:'w'});
     res.status(200);
-    res.json("Course info has been successfully added to the available courses");
+    res.json(validator.validateCourseInfo(courseDetails, courseData));
   } else {
     res.status(400);
-    res.send("Course Info is malformed please provide all the properties");
+    res.json(validator.validateCourseInfo(courseDetails, courseData))
   }
 });
 
