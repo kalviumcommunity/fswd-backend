@@ -1,0 +1,58 @@
+{
+  "kalvium": [
+    {
+      "course": "node js",
+      "courseId": 1,
+      "cohort": 1,
+      "college": "Lovely professional university",
+      "semester": 2,
+      "instructor": "Pawan Panjwani",
+      "averageRating": 0
+    },
+    {
+      "course": "free and open source software",
+      "courseId": 2,
+      "cohort": 1,
+      "college": "Lovely professional university",
+      "semester": 3,
+      "instructor": "Pawan Panjwani",
+      "averageRating": 1
+    },
+    {
+      "course": "node js",
+      "courseId": 1,
+      "cohort": 1,
+      "college": "Lovely professional university",
+      "semester": 2,
+      "instructor": "Pawan Panjwani",
+      "averageRating": 0
+    },
+    {
+      "course": "node js",
+      "courseId": 1,
+      "cohort": 1,
+      "college": "Lovely professional university",
+      "semester": 2,
+      "instructor": "Pawan Panjwani",
+      "averageRating": 0
+    },
+    {
+      "course": "node js",
+      "courseId": 1,
+      "cohort": 1,
+      "college": "Lovely professional university",
+      "semester": 2,
+      "instructor": "Pawan Panjwani",
+      "averageRating": 0
+    },
+    {
+      "course": "node js",
+      "courseId": 1,
+      "cohort": 1,
+      "college": "Lovely professional university",
+      "semester": 2,
+      "instructor": "Pawan Panjwani",
+      "averageRating": 0
+    }
+  ]
+}
