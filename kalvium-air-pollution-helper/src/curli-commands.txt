@@ -1,0 +1,17 @@
+1) Get air quality for mumbai - callback
+curl http://localhost:3000/airQuality/mumbai/callback\?radius\=10000\&limit\=100\&sortOrder\=desc
+
+2) Get air quality for mumbai - promise
+curl http://localhost:3000/airQuality/mumbai/promise\?radius\=10000\&limit\=100\&sortOrder\=desc
+
+3) Get air quality of mumbai - async await
+curl http://localhost:3000/airQuality/mumbai/asyncAwait\?radius\=10000\&limit\=100\&sortOrder\=desc | jq
+
+4) Get air quality of mumbai - async await and write data
+curl http://localhost:3000/airQuality/mumbai/asyncAwait/writeData\?radius\=10000\&limit\=100\&sortOrder\=desc | jq
+
+5) callback hell - get air quality
+curl 'http://localhost:3000/airQuality/callbackHell?radius=10000&limit=40&pagesToFetch=2&sortOrder=desc' | jq
+
+6) async await - get air quality
+curl 'http://localhost:3000/airQuality/asyncAwait?radius=10000&limit=40&pagesToFetch=2&sortOrder=desc' | jq
