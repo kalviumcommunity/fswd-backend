@@ -2,9 +2,9 @@ const { default: axios } = require("axios");
 
 function airQualityCallback(url, callback) {
   axios.get(url).then(resp => {
-    callback(resp.data);
+    callback(null, resp.data);
   }).catch(err => {
-    callback(err);
+    callback(err, null);
   });
 }
 

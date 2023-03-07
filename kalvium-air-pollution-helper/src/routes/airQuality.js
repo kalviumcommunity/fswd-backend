@@ -20,7 +20,7 @@ airQuality.get('/:cityName/callback', (req, res) => {
     let payload = {city:capitalizeFirstLetter(cityName), radius:radius, limit:limit, sort:sortOrder};
     const searchParams = new URLSearchparams(payload);
     console.log(`${url}?${searchParams}`);
-    airQualityCallback(url, function(err, resp) {
+    airQualityCallback(`${url}?${searchParams}`, function(err, resp) {
         if(err) {
           res.status(500).json({error: err});
           console.log(err);
@@ -31,6 +31,51 @@ airQuality.get('/:cityName/callback', (req, res) => {
     });
 });
 
+airQuality.get('/callbackHell', (req, res) => {
+  let radius = req.query.radius;
+  let limit = req.query.limit;
+  let sortOrder = req.query.sortOrder;
+  let pagesToFetch = req.query.pages;
+  if (pagesToFetch > 3) {
+    res.status(400).send("Pages to fetch cannot be greater than 3");
+  }
+  let payload = {radius:radius, limit:limit, sort:sortOrder, page:1};
+  const searchParams = new URLSearchparams(payload);
+  airQualityCallback(`${url}?${searchParams}`, function(err, resp) {
+    if(err) {
+      res.status(500).json({error: err});
+      console.log(err);
+    } else {
+      let recordsFound = resp.meta.found;
+      if(recordsFound > limit) {
+        payload.page = payload.page + 1;
+        const searchParams2 = new URLSearchparams(payload);
+        airQualityCallback(`${url}?${searchParams2}`, function(err, resp2) {
+          if(err) {
+            res.status(500).json({error: err});
+            console.log(err);
+          } else {
+            let recordsFound = resp2.meta.found;
+            if(recordsFound > limit) {
+              payload.page = payload.page + 1;
+              const searchParams3 = new URLSearchparams(payload);
+              airQualityCallback(`${url}?${searchParams3}`, function(err, resp3) {
+                if(err) {
+                  res.status(500).json({error: err});
+                  console.log(err);
+                } else {
+                  res.status(200).json(resp3);
+                  console.log(`Found the data for city name ${cityName} response: ${resp3}`);
+                }
+              });
+            }
+          }
+        });
+      }
+    }
+  })
+})
+
 airQuality.get('/:cityName/promise', (req, res) => {
   let cityName = req.params.cityName;
   let radius = req.query.radius;
@@ -39,7 +84,7 @@ airQuality.get('/:cityName/promise', (req, res) => {
   let payload = {city:capitalizeFirstLetter(cityName), radius:radius, limit:limit, sort:sortOrder};
   const searchParams = new URLSearchparams(payload);
   console.log(`${url}?${searchParams}`);
-  airQualityPromise(url).then(resp => {
+  airQualityPromise(`${url}?${searchParams}`).then(resp => {
     console.log(`Found the data for city name ${cityName} response: ${resp}`);
     res.setHeader('Content-Type', 'application/json');
     res.status(200).json(resp);
@@ -59,7 +104,7 @@ airQuality.get('/:cityName/asyncAwait', async (req, res) => {
   const searchParams = new URLSearchparams(payload);
   console.log(`${url}?${searchParams}`);
   try {
-    let resp = await airQualityPromise(url);
+    let resp = await airQualityPromise(`${url}?${searchParams}`);
     console.log(`Found the data for city name ${cityName} response: ${resp}`);
     res.setHeader('Content-Type', 'application/json');
     res.status(200).json(resp);
@@ -79,7 +124,7 @@ airQuality.get('/:cityName/asyncAwait/writeData', async (req, res) => {
   const searchParams = new URLSearchparams(payload);
   console.log(`${url}?${searchParams}`);
   try {
-    let resp = await airQualityPromise(url);
+    let resp = await airQualityPromise(`${url}?${searchParams}`);
     console.log(`Found the data for city name ${cityName} response: ${resp}`);
     res.setHeader('Content-Type', 'application/json');
     ensureDirectoryExistence(`../../airQuality/${cityName}/quality-data.json`);
